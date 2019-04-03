@@ -308,7 +308,7 @@ def create_ical_graph_locality(sc, vis_graph_list, model_graph, nchan, context="
     if first_selfcal is not None and first_selfcal == 0:
         model_vis_graph_list = create_zero_vis_graph(vis_graph_list)
         #vis_graph_list should be merged with model_vis_graph_list
-        model_vis_graph_list = create_predict_graph(model_vis_graph_list_graph_list, model_graph, vis_slices=vis_slices, facets=facets,
+        model_vis_graph_list = create_predict_graph(model_vis_graph_list, model_graph, vis_slices=vis_slices, facets=facets,
                                                     context=context, nfrequency=nchan, **kwargs)
         vis_graph_list = create_calibrate_graph_list(vis_graph_list, model_vis_graph_list, **kwargs)
         # Here modify create_calibrate_graph_list to keep vis_graph_list both vis and model
