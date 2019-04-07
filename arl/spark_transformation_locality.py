@@ -504,7 +504,31 @@ def reppre_ifft_kernel(ix, data_extract_lsm, dep_image, insert_method, applybeam
     label = "Reprojection Predict + IFFT (14645.6 MB, 2.56 Tflop) "
     # print(label + str(result))
     return result
-
+def degrid_handle_first(reppre_ifft, telescope_value, context, vis_slices, facets, nfrequency, **kwargs) -> BlockVisibility :
+    parallelism = get_parameter(kwargs, "parallelism")
+    c = imaging_context(context)
+    if context == "2d":
+        #telescope_data = telescope_data.mapValues(lambda vis: coalesce_visibility(vis, **kwargs))
+		#broadcast_telescope = sc.broadcast(telescope_data.collect())
+        #return reppre_ifft.join(telescope_data, parallelism).map(lambda record: degrid_kernel(record, c["predict"], context=context, **kwargs))
+        nchan=get_parameter(kwargs, "nchan")
+        partitioner = SDPPartitioner_by_frequency()
+        return reppre_ifft.map(lambda record: degrid_kernel_2d(record, telescope_value, c["predict"], context=context, **kwargs)).partitionBy(partitioner)
+def degrid_handle_locality(reppre_ifft, telescope_value, context, vis_slices, facets,first, nfrequency, **kwargs) -> BlockVisibility :
+    parallelism = get_parameter(kwargs, "parallelism")
+    c = imaging_context(context)
+    if context == "2d":
+        #telescope_data = telescope_data.mapValues(lambda vis: coalesce_visibility(vis, **kwargs))
+        #return reppre_ifft.join(telescope_data, parallelism).map(lambda record: degrid_kernel(record, c["predict"], context=context, **kwargs))
+        return reppre_ifft.map(
+            lambda record: degrid_kernel_2d_first(record, telescope_value, c["predict"], context=context, **kwargs))
+    elif context == "facets":
+            #telescope_data = telescope_data.mapValues(lambda vis: coalesce_visibility(vis, **kwargs))
+            print("scatter_image")
+            return reppre_ifft.flatMap(
+                lambda im: scatter_image_flatmap(im, facets=facets, image_iter=c["image_iterator"], **kwargs), True) \
+                .map(lambda record: degrid_kernel_2d(record, telescope_value, c["predict"], context=context, **kwargs),
+                     True).reduceByKey(sum_predict_vis_reduce_kernel)
 def degrid_handle(reppre_ifft, telescope_data, context, vis_slices, facets, nfrequency, **kwargs) -> BlockVisibility :
     parallelism = get_parameter(kwargs, "parallelism")
     c = imaging_context(context)
@@ -522,7 +546,6 @@ def degrid_handle(reppre_ifft, telescope_data, context, vis_slices, facets, nfre
     elif context == "facets_slice" or context == "facets_timeslice" or context == "facets_wstack":
         telescope_data_origin = telescope_data.map(lambda vis: (vis[0], coalesce_visibility(vis[1], **kwargs)))
         telescope_data = telescope_data_origin.flatMap(lambda vis: scatter_vis_flatmap(vis, vis_slices=vis_slices, vis_iter=c["vis_iterator"], **kwargs), True)
-        # TODO 此处可优化
         return reppre_ifft.flatMap(lambda im: scatter_image_flatmap(im, facets=facets, image_iter=c["image_iterator"], **kwargs), True) \
             .join(telescope_data).map(lambda record: degrid_kernel(record, c["predict"], context=context, **kwargs)) \
             .combineByKey(gather_vis_createCombiner_kernel, gather_vis_mergeValue_kernel, gather_vis_mergeCombiner_kernel)\
@@ -591,6 +614,34 @@ def gather_vis_kernel(data, vis_slices, vis_iter, **kwargs) -> BlockVisibility:
     data_vis = decoalesce_visibility(data_vis, **kwargs)
     return data_vis
 
+def degrid_kernel_2d_first(ixs, broadvalue, function, context, **kwargs):
+    #no need visibility here, only the visibility structure
+    tele=broadvalue.value
+    key,teles=next(tele)
+    times = teles["times"]
+    frequencys = teles["frequencys"]
+    channel_bandwidth = teles["channel_bandwidth"]
+    phasecentre = teles["phasecentre"]
+    polarisation_frame = teles["polarisation_frame"]
+    weight = teles["weight"]
+    conf = teles["conf"]
+    data_visibility=create_blockvisibility(conf, times=times, frequency=frequencys,
+                                      channel_bandwidth=channel_bandwidth,
+                                      weight=weight, phasecentre=phasecentre,
+                                      polarisation_frame=polarisation_frame)
+    iix,data_image = ixs
+    #iter_id = data_visibility.iter_id
+    result = function(copy_visibility(data_visibility), data_image, context=context, **kwargs)
+    if  context == "facets":
+        iix = (iix[0], iix[1], iix[2], iix[3], data_image.facet_id, iix[5])
+        result.iter_id = iter_id
+    #else:
+    #    result = decoalesce_visibility(result, **kwargs)
+    #result = (iix, (result,data_visibility))
+    result = (iix, result)
+    label = "Degridding Kernel Update + Degrid (674.8 MB, 0.59 Tflop) "
+    print(label + str(result))
+    return result
 def degrid_kernel(ixs, function, context, **kwargs):
     iix, (data_image, data_visibility) = ixs
     iter_id = data_visibility.iter_id

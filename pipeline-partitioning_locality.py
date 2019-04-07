@@ -74,7 +74,16 @@ def trial_case(results, seed=180555, context='wstack', nworkers=8, threads_per_w
     phasecentre = SkyCoord(ra=+30.0 * u.deg, dec=-60.0 * u.deg, frame='icrs', equinox='J2000')
     config = 'LOWBD2'
     polarisation_frame = PolarisationFrame("stokesI")
-
+    #add broadcast value for telescope_management_data
+    telescope_management = telescope_management_handle(sc, config, rmax)
+    telescope_management_data = telescope_data_generate(telescope_management, times=times, frequencys=frequency,
+                                                        channel_bandwidth=channel_bandwidth, weight=1.0,
+                                                        phasecentre=phasecentre, polarisation_frame=polarisation_frame,
+                                                        order=order)
+    key, meta = next(telescope_management_data)
+    print(key)
+    print(meta["frequencys"])
+    broadcast_tele = sc.broadcast(telescope_management_data)
 
     vis_graph_list = create_simulate_vis_graph(sc, 'LOWBD2', frequency=frequency, channel_bandwidth=channel_bandwidth,
                                                times=times, phasecentre=phasecentre, order=order, format='blockvis',
@@ -134,7 +143,7 @@ def trial_case(results, seed=180555, context='wstack', nworkers=8, threads_per_w
     print("Creating GLEAM model took %.2f seconds" % (end - start))
 
 
-    vis_graph_list = create_predict_graph(vis_graph_list, gleam_model_graph, vis_slices=vis_slices, facets=facets, context=context
+    vis_graph_list = create_predict_graph_first(gleam_model_graph, vis_slices=vis_slices, facets=facets, context=context
                                           , kernel=kernel, nfrequency=nfreqwin)
     start = time.time()
     print("****** Starting GLEAM model visibility prediction ******")

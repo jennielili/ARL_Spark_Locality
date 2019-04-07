@@ -1,0 +1,142 @@
+2019-04-07 07:03:50 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+/home/hadoop/anaconda3/envs/py35/lib/python3.7/site-packages/dask/config.py:168: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  data = yaml.load(f.read()) or {}
+/home/hadoop/anaconda3/envs/py35/lib/python3.7/site-packages/distributed/config.py:20: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  defaults = yaml.load(f)
+Using 8 workers
+Using 8 threads per worker
+Trying 8 workers
+Using 8 threads per worker
+Defining 256 frequency windows
+Saving results to ./develop_csv/pipelines-timings-delayed_hadoop55_0.csv
+Context is 2d
+At start, configuration is {'nworkers': 8, 'context': '2d', 'nnodes': 1, 'nfreqwin': 256, 'rmax': 200.0, 'ntimes': 7, 'hostname': 'hadoop55', 'epoch': '2019-04-07 07:03:53', 'driver': 'pipelines-timings-delayed', 'seed': 180555, 'git_hash': b'170965699f8c4b686a4e7daca0431ec1fbaee3a1\n', 'threads_per_worker': 8, 'processes': True, 'order': 'frequency', 'facets': 4, 'wprojection_planes': 1}
+2019-04-07 07:03:53 INFO  SparkContext:54 - Running Spark version 2.3.3
+2019-04-07 07:03:53 INFO  SparkContext:54 - Submitted application: spark
+2019-04-07 07:03:53 INFO  SecurityManager:54 - Changing view acls to: hadoop
+2019-04-07 07:03:53 INFO  SecurityManager:54 - Changing modify acls to: hadoop
+2019-04-07 07:03:53 INFO  SecurityManager:54 - Changing view acls groups to: 
+2019-04-07 07:03:53 INFO  SecurityManager:54 - Changing modify acls groups to: 
+2019-04-07 07:03:53 INFO  SecurityManager:54 - SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(hadoop); groups with view permissions: Set(); users  with modify permissions: Set(hadoop); groups with modify permissions: Set()
+2019-04-07 07:03:54 INFO  Utils:54 - Successfully started service 'sparkDriver' on port 54611.
+2019-04-07 07:03:54 INFO  SparkEnv:54 - Registering MapOutputTracker
+2019-04-07 07:03:54 INFO  SparkEnv:54 - Registering BlockManagerMaster
+2019-04-07 07:03:54 INFO  BlockManagerMasterEndpoint:54 - Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+2019-04-07 07:03:54 INFO  BlockManagerMasterEndpoint:54 - BlockManagerMasterEndpoint up
+2019-04-07 07:03:54 INFO  DiskBlockManager:54 - Created local directory at /tmp/blockmgr-9ec61b7a-4bfe-483c-a426-7a5f8aa153d5
+2019-04-07 07:03:54 INFO  MemoryStore:54 - MemoryStore started with capacity 53.2 GB
+2019-04-07 07:03:54 INFO  SparkEnv:54 - Registering OutputCommitCoordinator
+2019-04-07 07:03:54 INFO  log:192 - Logging initialized @5726ms
+2019-04-07 07:03:55 INFO  Server:351 - jetty-9.3.z-SNAPSHOT, build timestamp: unknown, git hash: unknown
+2019-04-07 07:03:55 INFO  Server:419 - Started @5936ms
+2019-04-07 07:03:55 INFO  AbstractConnector:278 - Started ServerConnector@36f5db1d{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
+2019-04-07 07:03:55 INFO  Utils:54 - Successfully started service 'SparkUI' on port 8080.
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@6504728d{/jobs,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@61c7e64{/jobs/json,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@e1ac336{/jobs/job,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@42ecf362{/jobs/job/json,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@27665a05{/stages,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@7fbd3eac{/stages/json,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@61bfdd75{/stages/stage,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@479095e2{/stages/stage/json,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@58dbbc10{/stages/pool,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@76363985{/stages/pool/json,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@5314e12b{/storage,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@10e8412e{/storage/json,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@1556441f{/storage/rdd,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@526bbd21{/storage/rdd/json,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@260213fe{/environment,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@74b1c721{/environment/json,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@53e00314{/executors,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@5c6d3efc{/executors/json,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@6ac64b6c{/executors/threadDump,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@10b401da{/executors/threadDump/json,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@431f487b{/static,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@57bd1d01{/,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@45d907c0{/api,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@26420518{/jobs/job/kill,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@2fc2c68b{/stages/stage/kill,null,AVAILABLE,@Spark}
+2019-04-07 07:03:55 INFO  SparkUI:54 - Bound SparkUI to 0.0.0.0, and started at http://hadoop55:8080
+2019-04-07 07:03:55 INFO  SparkContext:54 - Added file file:///home/hadoop/qli/lqh2019/ARL_Spark_Locality/sc256 at file:///home/hadoop/qli/lqh2019/ARL_Spark_Locality/sc256 with timestamp 1554635035569
+2019-04-07 07:03:55 INFO  Utils:54 - Copying /home/hadoop/qli/lqh2019/ARL_Spark_Locality/sc256 to /tmp/spark-a96b3095-c491-480b-a576-d971846a4c5d/userFiles-1e0c79d3-c701-431f-94d7-619a747f2525/sc256
+2019-04-07 07:03:55 INFO  SparkContext:54 - Added file file:///home/hadoop/qli/lqh2019/ARL_Spark_Locality/LOWBD2.csv at file:///home/hadoop/qli/lqh2019/ARL_Spark_Locality/LOWBD2.csv with timestamp 1554635035619
+2019-04-07 07:03:55 INFO  Utils:54 - Copying /home/hadoop/qli/lqh2019/ARL_Spark_Locality/LOWBD2.csv to /tmp/spark-a96b3095-c491-480b-a576-d971846a4c5d/userFiles-1e0c79d3-c701-431f-94d7-619a747f2525/LOWBD2.csv
+2019-04-07 07:03:55 INFO  SparkContext:54 - Added file file:///home/hadoop/qli/lqh2019/ARL_Spark_Locality/SKA1_LOW_beam.fits at file:///home/hadoop/qli/lqh2019/ARL_Spark_Locality/SKA1_LOW_beam.fits with timestamp 1554635035626
+2019-04-07 07:03:55 INFO  Utils:54 - Copying /home/hadoop/qli/lqh2019/ARL_Spark_Locality/SKA1_LOW_beam.fits to /tmp/spark-a96b3095-c491-480b-a576-d971846a4c5d/userFiles-1e0c79d3-c701-431f-94d7-619a747f2525/SKA1_LOW_beam.fits
+2019-04-07 07:03:55 INFO  SparkContext:54 - Added file file:/home/hadoop/qli/lqh2019/ARL_Spark_Locality/pipeline-partitioning_locality.py at file:/home/hadoop/qli/lqh2019/ARL_Spark_Locality/pipeline-partitioning_locality.py with timestamp 1554635035635
+2019-04-07 07:03:55 INFO  Utils:54 - Copying /home/hadoop/qli/lqh2019/ARL_Spark_Locality/pipeline-partitioning_locality.py to /tmp/spark-a96b3095-c491-480b-a576-d971846a4c5d/userFiles-1e0c79d3-c701-431f-94d7-619a747f2525/pipeline-partitioning_locality.py
+2019-04-07 07:03:55 INFO  SparkContext:54 - Added file file:///home/hadoop/qli/lqh2019/ARL_Spark_Locality/arl.zip at file:///home/hadoop/qli/lqh2019/ARL_Spark_Locality/arl.zip with timestamp 1554635035640
+2019-04-07 07:03:55 INFO  Utils:54 - Copying /home/hadoop/qli/lqh2019/ARL_Spark_Locality/arl.zip to /tmp/spark-a96b3095-c491-480b-a576-d971846a4c5d/userFiles-1e0c79d3-c701-431f-94d7-619a747f2525/arl.zip
+2019-04-07 07:03:55 INFO  Executor:54 - Starting executor ID driver on host localhost
+2019-04-07 07:03:55 INFO  Utils:54 - Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 33864.
+2019-04-07 07:03:55 INFO  NettyBlockTransferService:54 - Server created on hadoop55:33864
+2019-04-07 07:03:55 INFO  BlockManager:54 - Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+2019-04-07 07:03:55 INFO  BlockManagerMaster:54 - Registering BlockManager BlockManagerId(driver, hadoop55, 33864, None)
+2019-04-07 07:03:55 INFO  BlockManagerMasterEndpoint:54 - Registering block manager hadoop55:33864 with 53.2 GB RAM, BlockManagerId(driver, hadoop55, 33864, None)
+2019-04-07 07:03:55 INFO  BlockManagerMaster:54 - Registered BlockManager BlockManagerId(driver, hadoop55, 33864, None)
+2019-04-07 07:03:55 INFO  BlockManager:54 - Initialized BlockManager: BlockManagerId(driver, hadoop55, 33864, None)
+2019-04-07 07:03:56 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@55c2277a{/metrics/json,null,AVAILABLE,@Spark}
+2019-04-07 07:03:56 ERROR SparkContext:91 - Error initializing SparkContext.
+java.io.FileNotFoundException: File file:/home/itct/fukaiyu/uilog does not exist
+	at org.apache.hadoop.fs.RawLocalFileSystem.deprecatedGetFileStatus(RawLocalFileSystem.java:611)
+	at org.apache.hadoop.fs.RawLocalFileSystem.getFileLinkStatusInternal(RawLocalFileSystem.java:824)
+	at org.apache.hadoop.fs.RawLocalFileSystem.getFileStatus(RawLocalFileSystem.java:601)
+	at org.apache.hadoop.fs.FilterFileSystem.getFileStatus(FilterFileSystem.java:421)
+	at org.apache.spark.scheduler.EventLoggingListener.start(EventLoggingListener.scala:100)
+	at org.apache.spark.SparkContext.<init>(SparkContext.scala:522)
+	at org.apache.spark.api.java.JavaSparkContext.<init>(JavaSparkContext.scala:58)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:247)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)
+	at py4j.Gateway.invoke(Gateway.java:238)
+	at py4j.commands.ConstructorCommand.invokeConstructor(ConstructorCommand.java:80)
+	at py4j.commands.ConstructorCommand.execute(ConstructorCommand.java:69)
+	at py4j.GatewayConnection.run(GatewayConnection.java:238)
+	at java.lang.Thread.run(Thread.java:748)
+2019-04-07 07:03:56 INFO  AbstractConnector:318 - Stopped Spark@36f5db1d{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
+2019-04-07 07:03:56 INFO  SparkUI:54 - Stopped Spark web UI at http://hadoop55:8080
+2019-04-07 07:03:56 INFO  MapOutputTrackerMasterEndpoint:54 - MapOutputTrackerMasterEndpoint stopped!
+2019-04-07 07:03:56 INFO  MemoryStore:54 - MemoryStore cleared
+2019-04-07 07:03:56 INFO  BlockManager:54 - BlockManager stopped
+2019-04-07 07:03:56 INFO  BlockManagerMaster:54 - BlockManagerMaster stopped
+2019-04-07 07:03:56 INFO  OutputCommitCoordinator$OutputCommitCoordinatorEndpoint:54 - OutputCommitCoordinator stopped!
+2019-04-07 07:03:56 INFO  SparkContext:54 - Successfully stopped SparkContext
+Traceback (most recent call last):
+  File "/home/hadoop/qli/lqh2019/ARL_Spark_Locality/pipeline-partitioning_locality.py", line 394, in <module>
+    main(parser.parse_args())
+  File "/home/hadoop/qli/lqh2019/ARL_Spark_Locality/pipeline-partitioning_locality.py", line 370, in main
+    threads_per_worker=threads_per_worker, nfreqwin=nfreqwin, ntimes=ntimes, facets=nfacets, parallelism=parallelism)
+  File "/home/hadoop/qli/lqh2019/ARL_Spark_Locality/pipeline-partitioning_locality.py", line 61, in trial_case
+    sc = SparkContext(conf=conf)
+  File "/home/hadoop/qli/spark-2.3.3-bin-hadoop2.7/python/lib/pyspark.zip/pyspark/context.py", line 132, in __init__
+  File "/home/hadoop/qli/spark-2.3.3-bin-hadoop2.7/python/lib/pyspark.zip/pyspark/context.py", line 194, in _do_init
+  File "/home/hadoop/qli/spark-2.3.3-bin-hadoop2.7/python/lib/pyspark.zip/pyspark/context.py", line 302, in _initialize_context
+  File "/home/hadoop/qli/spark-2.3.3-bin-hadoop2.7/python/lib/py4j-0.10.7-src.zip/py4j/java_gateway.py", line 1525, in __call__
+  File "/home/hadoop/qli/spark-2.3.3-bin-hadoop2.7/python/lib/py4j-0.10.7-src.zip/py4j/protocol.py", line 328, in get_return_value
+py4j.protocol.Py4JJavaError: An error occurred while calling None.org.apache.spark.api.java.JavaSparkContext.
+: java.io.FileNotFoundException: File file:/home/itct/fukaiyu/uilog does not exist
+	at org.apache.hadoop.fs.RawLocalFileSystem.deprecatedGetFileStatus(RawLocalFileSystem.java:611)
+	at org.apache.hadoop.fs.RawLocalFileSystem.getFileLinkStatusInternal(RawLocalFileSystem.java:824)
+	at org.apache.hadoop.fs.RawLocalFileSystem.getFileStatus(RawLocalFileSystem.java:601)
+	at org.apache.hadoop.fs.FilterFileSystem.getFileStatus(FilterFileSystem.java:421)
+	at org.apache.spark.scheduler.EventLoggingListener.start(EventLoggingListener.scala:100)
+	at org.apache.spark.SparkContext.<init>(SparkContext.scala:522)
+	at org.apache.spark.api.java.JavaSparkContext.<init>(JavaSparkContext.scala:58)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:247)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)
+	at py4j.Gateway.invoke(Gateway.java:238)
+	at py4j.commands.ConstructorCommand.invokeConstructor(ConstructorCommand.java:80)
+	at py4j.commands.ConstructorCommand.execute(ConstructorCommand.java:69)
+	at py4j.GatewayConnection.run(GatewayConnection.java:238)
+	at java.lang.Thread.run(Thread.java:748)
+
+2019-04-07 07:03:56 INFO  ShutdownHookManager:54 - Shutdown hook called
+2019-04-07 07:03:56 INFO  ShutdownHookManager:54 - Deleting directory /tmp/spark-1ee9b9be-dd41-419f-8c98-1cb981d48855
+2019-04-07 07:03:56 INFO  ShutdownHookManager:54 - Deleting directory /tmp/spark-a96b3095-c491-480b-a576-d971846a4c5d
