@@ -36,7 +36,8 @@ def SDPPartitioner_by_frequency(key):
     '''
 		Partitioner_function
 	'''
-    return int(str(key).split(',')[2])
+    print(str(key))
+    return key
 
 def iterate_print_rdd(rdd, only_index=True):
     for item in rdd.collect():
@@ -366,6 +367,24 @@ def subtract_kernel_locality(ixs):
         return subvis
     else:
         return None
+
+def telescope_management_handle_locality(sc: SparkContext, config, rmax):
+
+    # partitions = defaultdict(int)
+    # partition = 0
+    # initset = []
+    # partitions[()] = partition
+    # partition += 1
+    # initset.append(((), ()))
+    # partitioner = MapPartitioner(partitions)
+    # return sc.parallelize(initset).partitionBy(len(partitions), partitioner).mapPartitions(
+    #   lambda a: telescope_management_kernel(a, config, rmax), True)
+    ix = 0
+    conf = create_named_configuration(config, rmax=rmax)
+    result = (ix, conf)
+    label = "Telescope Management (0.0 MB, 0.00 Tflop) "
+    print(label + str(result))
+    return iter([result])
 def telescope_data_handle(telescope_management, times, frequencys, channel_bandwidth,
                           weight, phasecentre, polarisation_frame, order, create_vis):
     # partitions = defaultdict(int)
@@ -417,7 +436,16 @@ def telescope_data_flatmap(ixs, dep_telescope_management: defaultdict(dict), pha
         dep_telescope_management[key]["weight"] = weight
         ret.append((key, dep_telescope_management[key]))
     return iter(ret)
-
+def telescope_data_flatmap_locality(ixs, dep_telescope_management: defaultdict(dict), phasecentre, polarisation, weight):
+    ret = []
+    _, conf = next(ixs)
+    for key in dep_telescope_management:
+        dep_telescope_management[key]["conf"] = conf
+        dep_telescope_management[key]["phasecentre"] = phasecentre
+        dep_telescope_management[key]["polarisation_frame"] = polarisation
+        dep_telescope_management[key]["weight"] = weight
+        ret.append((key, dep_telescope_management[key]))
+    return iter(ret)
 def telescope_data_kernel(ixs, create_vis):
     '''
 		分割visibility类为visibility_para
@@ -504,16 +532,30 @@ def reppre_ifft_kernel(ix, data_extract_lsm, dep_image, insert_method, applybeam
     label = "Reprojection Predict + IFFT (14645.6 MB, 2.56 Tflop) "
     # print(label + str(result))
     return result
+def create_predict_graph_first(gleam_model_graph, broadcast_tele, vis_slices=1, facets=1, context='2d', nfrequency=16, **kwargs):
+    results_vis_graph_list = degrid_handle_first(gleam_model_graph, broadcast_tele,  context=context, vis_slices=vis_slices,
+                                           facets=facets, nfrequency=nfrequency, **kwargs)
+    return results_vis_graph_list
 def degrid_handle_first(reppre_ifft, telescope_value, context, vis_slices, facets, nfrequency, **kwargs) -> BlockVisibility :
     parallelism = get_parameter(kwargs, "parallelism")
     c = imaging_context(context)
+    partitions = defaultdict(int)
+    partition = 0
+    initset = []
+    beam = 0
+    major_loop = 0
+    nfreqwin=256
     if context == "2d":
         #telescope_data = telescope_data.mapValues(lambda vis: coalesce_visibility(vis, **kwargs))
 		#broadcast_telescope = sc.broadcast(telescope_data.collect())
         #return reppre_ifft.join(telescope_data, parallelism).map(lambda record: degrid_kernel(record, c["predict"], context=context, **kwargs))
         nchan=get_parameter(kwargs, "nchan")
-        partitioner = SDPPartitioner_by_frequency()
-        return reppre_ifft.map(lambda record: degrid_kernel_2d(record, telescope_value, c["predict"], context=context, **kwargs)).partitionBy(partitioner)
+        #partitioner = SDPPartitioner_by_frequency()
+        data=reppre_ifft.map(lambda record: degrid_kernel_2d_first(record, telescope_value, c["predict"], context=context, **kwargs))
+        temp=data.collect()
+        print("*******************   in   degrid_handle_first "+str(temp[0]))
+        return data.partitionBy(nfreqwin,lambda k:SDPPartitioner_by_frequency(k[2]))
+        #return reppre_ifft.map(lambda record: degrid_kernel_2d_first(record, telescope_value, c["predict"], context=context, **kwargs)).partitionBy(nfreqwin,lambda k:SDPPartitioner_by_frequency(k[0][2]))
 def degrid_handle_locality(reppre_ifft, telescope_value, context, vis_slices, facets,first, nfrequency, **kwargs) -> BlockVisibility :
     parallelism = get_parameter(kwargs, "parallelism")
     c = imaging_context(context)
@@ -613,7 +655,80 @@ def gather_vis_kernel(data, vis_slices, vis_iter, **kwargs) -> BlockVisibility:
             data_vis.data['vis'][rows] = data_dict[i]
     data_vis = decoalesce_visibility(data_vis, **kwargs)
     return data_vis
+def telescope_data_generate(telescope_management, times, frequencys, channel_bandwidth,
+                          weight, phasecentre, polarisation_frame, order):
+    # partitions = defaultdict(int)
+    partition = 0
+    dep_telescope_management = defaultdict(dict)
+    beam = 0
+    baseline = 0
+    major_loop = 0
+    facet = 0
+    polarisation = 0
+    if order == 'time':
+        j = 0
+        for i, time in enumerate(times):
+            # partitions[(beam, major_loop, j, i, facet, polarisation)] = partition
+            partition += 1
+            dep_telescope_management[(beam, major_loop, j, i, facet, polarisation)] = \
+                {"times": [time], "frequencys": frequencys, "channel_bandwidth": channel_bandwidth}
 
+    elif order == 'frequency':
+        i = 0
+        for j, (frequency, bandwidth) in enumerate(zip(frequencys, channel_bandwidth)):
+            # partitions[(beam, major_loop, j, i, facet, polarisation)] = partition
+            partition += 1
+            dep_telescope_management[(beam, major_loop, j, i, facet, polarisation)] = \
+                {"times": times, "frequencys": [frequency], "channel_bandwidth": [bandwidth]}
+
+    elif order == "both":
+        for j, (frequency, bandwidth) in enumerate(zip(frequencys, channel_bandwidth)):
+            for i, time in enumerate(times):
+                # partitions[(beam, major_loop, j, i, facet, polarisation)] = partition
+                partition += 1
+                dep_telescope_management[(beam, major_loop, j, i, facet, polarisation)] = \
+                    {"times": [time], "frequencys": [frequency], "channel_bandwidth": [bandwidth]}
+
+
+    tele_data=telescope_data_flatmap(telescope_management, dep_telescope_management,phasecentre,polarisation_frame,weight=1.0)
+    return tele_data
+def telescope_data_generate_locality(telescope_management, times, frequencys, channel_bandwidth,
+                          weight, phasecentre, polarisation_frame, order):
+    # partitions = defaultdict(int)
+    partition = 0
+    dep_telescope_management = defaultdict(dict)
+    beam = 0
+    baseline = 0
+    major_loop = 0
+    facet = 0
+    polarisation = 0
+    if order == 'time':
+        j = 0
+        for i, time in enumerate(times):
+            # partitions[(beam, major_loop, j, i, facet, polarisation)] = partition
+            partition += 1
+            dep_telescope_management[(beam, major_loop, j, i, facet, polarisation)] = \
+                {"times": [time], "frequencys": frequencys, "channel_bandwidth": channel_bandwidth}
+
+    elif order == 'frequency':
+        i = 0
+        for j, (frequency, bandwidth) in enumerate(zip(frequencys, channel_bandwidth)):
+            # partitions[(beam, major_loop, j, i, facet, polarisation)] = partition
+            partition += 1
+            dep_telescope_management[(beam, major_loop, j, i, facet, polarisation)] = \
+                {"times": times, "frequencys": [frequency], "channel_bandwidth": [bandwidth]}
+
+    elif order == "both":
+        for j, (frequency, bandwidth) in enumerate(zip(frequencys, channel_bandwidth)):
+            for i, time in enumerate(times):
+                # partitions[(beam, major_loop, j, i, facet, polarisation)] = partition
+                partition += 1
+                dep_telescope_management[(beam, major_loop, j, i, facet, polarisation)] = \
+                    {"times": [time], "frequencys": [frequency], "channel_bandwidth": [bandwidth]}
+
+
+    tele_data=telescope_data_flatmap_locality(telescope_management, dep_telescope_management,phasecentre,polarisation_frame,weight=1.0)
+    return tele_data
 def degrid_kernel_2d_first(ixs, broadvalue, function, context, **kwargs):
     #no need visibility here, only the visibility structure
     tele=broadvalue.value
@@ -639,7 +754,7 @@ def degrid_kernel_2d_first(ixs, broadvalue, function, context, **kwargs):
     #    result = decoalesce_visibility(result, **kwargs)
     #result = (iix, (result,data_visibility))
     result = (iix, result)
-    label = "Degridding Kernel Update + Degrid (674.8 MB, 0.59 Tflop) "
+    label = "Degridding Kernel Update + Degrid (674.8 MB, 0.59 Tflop) "+str(iix)
     print(label + str(result))
     return result
 def degrid_kernel(ixs, function, context, **kwargs):

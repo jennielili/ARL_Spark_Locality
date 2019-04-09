@@ -75,8 +75,8 @@ def trial_case(results, seed=180555, context='wstack', nworkers=8, threads_per_w
     config = 'LOWBD2'
     polarisation_frame = PolarisationFrame("stokesI")
     #add broadcast value for telescope_management_data
-    telescope_management = telescope_management_handle(sc, config, rmax)
-    telescope_management_data = telescope_data_generate(telescope_management, times=times, frequencys=frequency,
+    telescope_management = telescope_management_handle_locality(sc, config, rmax)
+    telescope_management_data = telescope_data_generate_locality(telescope_management, times=times, frequencys=frequency,
                                                         channel_bandwidth=channel_bandwidth, weight=1.0,
                                                         phasecentre=phasecentre, polarisation_frame=polarisation_frame,
                                                         order=order)
@@ -143,7 +143,7 @@ def trial_case(results, seed=180555, context='wstack', nworkers=8, threads_per_w
     print("Creating GLEAM model took %.2f seconds" % (end - start))
 
 
-    vis_graph_list = create_predict_graph_first(gleam_model_graph, vis_slices=vis_slices, facets=facets, context=context
+    vis_graph_list = create_predict_graph_first(gleam_model_graph,broadcast_tele, vis_slices=vis_slices, facets=facets, context=context
                                           , kernel=kernel, nfrequency=nfreqwin)
     start = time.time()
     print("****** Starting GLEAM model visibility prediction ******")
@@ -194,6 +194,7 @@ def trial_case(results, seed=180555, context='wstack', nworkers=8, threads_per_w
     # dirty_graph = create_invert_graph(vis_graph_list, model_graph, vis_slices=vis_slices, context=context, facets=facets,
     #                                 kernel=kernel)
     #
+
     # start = time.time()
     # print("****** Starting dirty image calculation ******")
     # dirtys  = dirty_graph.collect()
@@ -288,12 +289,6 @@ def trial_case(results, seed=180555, context='wstack', nworkers=8, threads_per_w
     sc.stop()
 
     return results
-
-
-
-
-
-
 
 def write_results(filename, fieldnames, results):
     with open(filename, 'a') as csvfile:
